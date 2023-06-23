@@ -184,6 +184,12 @@ VALUES(
 ((SELECT dimension_id FROM dimension WHERE dimension_name = 'World of Cosmos'),
  'Onrac',
 'Onrac is a city-state where much entertainment prevails. Once long ago, the Onrac was known for its advanced military, incredible technological breakthroughs and scientific research, but many protests and a change in political hands saw this city bury its past behind a golden veil of the arts. Many auditoriums and museums, and even a large blitzball stadium dot the city. Very few are lucky to meet Nerissa in person, as she is a popular socialite, fashion model, and even a world-famous blitzball player for the Onrac Abes.'
+)
+
+
+,((SELECT dimension_id FROM dimension WHERE dimension_name = 'Rift-Torn World'),
+'Great Forest of Moore',
+'A sprawling forest full of creatures both common and rare. It is said that somehwere in this forest sits a large tree with the power to seal away evil. With the many talismans that hang on the trunk of this tree, it seems nearly full to bursting.'
 );
 
 INSERT INTO location(
@@ -250,6 +256,16 @@ VALUES
  19,
  14,
  13
+),
+
+('Shuvuuvu',
+6,
+12,
+16,
+14,
+14,
+10,
+18
 );
 
 INSERT INTO local_creature(
@@ -277,14 +293,84 @@ VALUES
 'An elf from the streets of Pravoka. Having served for a short time as a deckmate for the Syldra Pirates, he decided to branch out into starting a business of his own selling weapons. His reasons for taking up the mantle as Warrior of Light is to gain further fame and sales in his weapons business.'
 );
 
+INSERT INTO stranger_creature(
+			creature_id,
+			name,
+			home_dimension_id,
+			home_locale_id,
+			description)
+VALUES
+(
+(SELECT creature_id FROM creature WHERE name = 'Altan'),
+'Altan',
+(SELECT d.dimension_id FROM dimension d JOIN location loc ON d.dimension_id = loc.dimension_id WHERE location_name = 'Mysidia'),
+(SELECT location_id FROM location WHERE location_name = 'Mysidia'),
+'A curious time mage whose magic bends time and space. He apparently stumbled into this world from the place called ''Mysidia'' after experimenting with magic a bit too far out of his grasp. His lax demeanor towards most things makes one seem like he doesn''t care about anything at all, but he is very calculating and precise when the time comes to act. Although he has been designated the role of Warrior of Light in this world, he misses his own, and is willing to undergo any trials or studies to return.'
+),
+
+(
+(SELECT creature_id FROM creature WHERE name = 'Shuvuuvu'),
+'Shuvuuvu',
+(SELECT d.dimension_id FROM dimension d JOIN location loc ON d.dimension_id = loc.dimension_id WHERE location_name = 'Great Forest of Moore'),
+(SELECT location_id FROM location WHERE location_name = 'Great Forest of Moore'),
+'Originally a black chocobo, this harpy-like lass was found as a squatter in a ship off the dock of Fisherman''s Horizon. Since receiving her human form from a dragon in the Rift, she has gained some skill in wind magic and illusory spells, and has apparently used it to great effect stealing gold from pirates in Pravoka. Despite all this, her heart is set on finding best friend Krile, and returning back home to her world--that is, if it still exists anymore.'
+);
+
+
+INSERT INTO resides_in (
+creature_id,
+dimension_id
+)
+VALUES
+(
+(SELECT creature_id FROM creature WHERE name = 'Luthien Dervin'),
+(SELECT home_dimension_id FROM local_creature WHERE name = 'Luthien Dervin')
+),
+(
+(SELECT creature_id FROM creature WHERE name = 'Iomene Dervin'),
+(SELECT home_dimension_id FROM local_creature WHERE name = 'Iomene Dervin')
+),
+(
+(SELECT creature_id FROM creature WHERE name = 'Guiscard Durendal'),
+(SELECT home_dimension_id FROM local_creature WHERE name = 'Guiscard Durendal')
+),
+(
+(SELECT creature_id FROM creature WHERE name = 'Altan'),
+(SELECT home_dimension_id FROM stranger_creature WHERE name = 'Altan')
+),
+(
+(SELECT creature_id FROM creature WHERE name = 'Shuvuuvu'),
+(SELECT home_dimension_id FROM stranger_creature WHERE name = 'Shuvuuvu')
+);
 
 --Query to call on all of the currently existing locales 
 	SELECT l.location_name, d.dimension_code, l.description AS City_Description FROM location l
 	JOIN dimension d ON l.dimension_id = d.dimension_id;
 	
 	SELECT * FROM creature;
+	SELECT * FROM stranger_creature;
 	SELECT * from dimension;
+	SELECT * FROM resides_in;
 	
+--Query to call on Local Creatures and and their home city and homeworld, as well as a description
 	SELECT lc.local_id, lc.name, d.dimension_name AS homeworld, l.location_name AS hometown, lc.description FROM local_creature lc
 	JOIN dimension d ON lc.home_dimension_id = d.dimension_id
 	JOIN location l ON lc.home_locale_id = l.location_id;
+	
+--Query to call on the names of all creatures, local or stranger, along with their Level, home city and homeworld
+--...I was going to say "As well as a description," but that won't work.
+--Note to self, add the description column to Creature table instead of splitting it between the local and stranger tables.
+SELECT DISTINCT ON (c.name) c.name, c.LV, d.dimension_name AS homeworld, loc.location_name AS hometown
+FROM creature c
+JOIN resides_in r ON c.creature_id = r.creature_id
+JOIN dimension d ON r.dimension_id = d.dimension_id
+JOIN location loc ON d.dimension_id = loc.dimension_id
+ORDER BY c.name, c.creature_id; -- this one sorts by name in alphabetical order
+
+
+SELECT DISTINCT ON (c.creature_id) c.name, c.LV, d.dimension_name AS homeworld, loc.location_name AS hometown
+FROM creature c
+JOIN resides_in r ON c.creature_id = r.creature_id
+JOIN dimension d ON r.dimension_id = d.dimension_id
+JOIN location loc ON d.dimension_id = loc.dimension_id
+ORDER BY c.creature_id, c.name; -- This one sorts by creature ID
