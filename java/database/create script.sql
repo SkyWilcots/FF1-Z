@@ -28,7 +28,7 @@ INSERT INTO dimension (
 VALUES (
 	'The Great Garden',
 	'2-A',
-	'Altan''s home world. According to information from him, there was once a despotic emperor named Mateus Palamecia, whose ruthlessness and tenacity almost allowed him to conquer the entire globe. That was a long time ago, it seems, as Altan claims the heroes responsible for the peace he lives under have long since died a peaceful death. It seems this world does not have crystals the way ours does.'
+	'Altan''s home world--one where the scent of wild roses carries in the wind wherever one goes. According to information from him, there was once a despotic emperor named Mateus Palamecia, whose ruthlessness and tenacity almost allowed him to conquer the entire globe. That was a long time ago, it seems, as Altan claims the heroes responsible for the peace he lives under have long since died a peaceful death. It seems this world does not have crystals the way ours does.'
 );
 
 INSERT INTO dimension (
@@ -121,7 +121,7 @@ INSERT INTO dimension (
 	dimension_code)
 VALUES (
 	'Vana''diel',
-	'11-'''
+	'11-A'
 );
 	
 	INSERT INTO dimension (
@@ -154,7 +154,7 @@ VALUES(
 	(SELECT dimension_id FROM dimension WHERE dimension_code = '2-A'),
 	'Mysidia',
 	'Altan''s hometown. A thriving magic city full of knowledge seated in a tropical continent. Altan claims it is the birthplace of a famous wizard from the era he references often, known as Minwu during the Wild Rose Rebellion. Judging by Altan''s own affinity for magic, one would assume many individuals who live in Mysidia practice the art of magic.'
-)
+);
 
 INSERT INTO dimension (
 	dimension_name,
@@ -198,6 +198,60 @@ VALUES(
 
 );
 
+--I encountered a 23503 error while trying to insert values into the local_creature and stranger_creature tables first. 
+--What I can do is insert values into creature first, then distinguish the creature as either a local_creature, or a stranger_creature.
+
+INSERT INTO creature(
+	name,
+	lv,
+	str_value,
+	dex_value,
+	con_value,
+	int_value,
+	wis_value,
+	cha_value
+)
+VALUES 
+('Luthien Dervin',
+ 8,
+ 10,
+ 16,
+ 15,
+ 20,
+ 13,
+ 11
+),
+
+('Iomene Dervin',
+ 8,
+ 18,
+ 12,
+ 16,
+ 11,
+ 12,
+ 18
+),
+
+('Guiscard Durendal',
+ 8,
+ 7,
+ 18,
+ 11,
+ 11,
+ 18,
+ 18
+),
+
+('Altan',
+ 8,
+ 10,
+ 14,
+ 11,
+ 19,
+ 14,
+ 13
+);
+
 INSERT INTO local_creature(
 	name,
 	home_locale_id,
@@ -206,28 +260,23 @@ INSERT INTO local_creature(
 VALUES
 
 (
-'Luthien Dervin',
+(SELECT name FROM creature WHERE name = 'Luthien Dervin'),
 (SELECT location_id FROM location WHERE location_name = 'Watercrest University'),	
 'A standoffish scholar and blue mage. Her sometimes poor temperament can be attributed to her peers--and her estranged mother--mistreating her from a young age for her relation to the infamous Elfheim terrorist, Astos. Since becoming a Warrior of Light, she seems to have three objectives in mind: Find her missing older sister Mayora; Prove to the world that she is better than her familial association with Astos; And finally, kill Astos.'
 ),
 
 (
-'Iomene Dervin',
+(SELECT name FROM creature WHERE name = 'Iomene Dervin'),
 (SELECT location_id FROM location WHERE location_name = 'Onrac'),
 'A jolly elf woman with many occupations under her belt, incluing being Luthien''s grandmother, a red mage, a former militiawoman, and a former movie actress. Despite looking to be in her late 20s, she claims to be more than 108 years old. Her youth apparently is the result of some form of science, but even Luthien doesn''the know the details to that.'
 ),
 
 (
-'Guiscard Durendal',
+(SELECT name FROM creature WHERE name = 'Guiscard Durendal'),
 (SELECT location_id FROM location WHERE location_name = 'Pravoka'),
-'An elf from the streets of Pravoka. Having served for a short time as a deckmate  for the Syldra Pirates, he decided to branch out into starting a business of his own selling weapons. His reasons for taking up the mantle as Warrior of Light is to gain further fame and sales in his weapons business.'
+'An elf from the streets of Pravoka. Having served for a short time as a deckmate for the Syldra Pirates, he decided to branch out into starting a business of his own selling weapons. His reasons for taking up the mantle as Warrior of Light is to gain further fame and sales in his weapons business.'
 );
 
--- INSERT INTO stranger_creature(
--- 			name
-			
-
--- )
 
 --Query to call on all of the currently existing locales 
 	SELECT l.location_name, d.dimension_code, l.description AS City_Description FROM location l
@@ -235,3 +284,7 @@ VALUES
 	
 	SELECT * FROM creature;
 	SELECT * from dimension;
+	
+	SELECT lc.local_id, lc.name, d.dimension_name AS homeworld, l.location_name AS hometown, lc.description FROM local_creature lc
+	JOIN dimension d ON lc.home_dimension_id = d.dimension_id
+	JOIN location l ON lc.home_locale_id = l.location_id;

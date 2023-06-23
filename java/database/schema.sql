@@ -3,7 +3,7 @@
 BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS creature, dimension, resides_in, location, local_creature, stranger_creature, stranger_artifact;
-DROP SEQUENCE IF EXISTS seq_creature_id,seq_stranger_id,seq_location_id, seq_dimension_id;
+DROP SEQUENCE IF EXISTS seq_creature_id,seq_stranger_id,seq_location_id, seq_dimension_id, seq_local_creature_id;
 
 
 CREATE SEQUENCE seq_creature_id
@@ -13,13 +13,14 @@ START WITH 1
 NO MAXVALUE;
 
 CREATE TABLE creature (creature_id int NOT NULL DEFAULT nextval('seq_creature_id'),
+					   name varchar(100) NOT NULL UNIQUE,
 					   LV int NOT NULL DEFAULT 1, 
-					   STRValue int NOT NULL DEFAULT 10, 
-					   DEXValue int NOT NULL DEFAULT 10, 
-					   CONValue int NOT NULL DEFAULT 10, 
-					   INTValue int NOT NULL DEFAULT 10, 
-					   WISValue int NOT NULL DEFAULT 10,
-					   CHAValue int NOT NULL DEFAULT 10,
+					   STR_Value int NOT NULL DEFAULT 10, 
+					   DEX_Value int NOT NULL DEFAULT 10, 
+					   CON_Value int NOT NULL DEFAULT 10, 
+					   INT_Value int NOT NULL DEFAULT 10, 
+					   WIS_Value int NOT NULL DEFAULT 10,
+					   CHA_Value int NOT NULL DEFAULT 10,
 																
 						CONSTRAINT pk_creature PRIMARY KEY (creature_id)
 );
@@ -31,7 +32,7 @@ NO MAXVALUE;
 					   
 CREATE TABLE dimension (dimension_id int NOT NULL DEFAULT nextval ('seq_dimension_id'),
 					   dimension_name varchar(100) NOT NULL UNIQUE,
-					   dimension_code varchar(3) NOT NULL UNIQUE,
+					   dimension_code varchar(5) NOT NULL UNIQUE,
 					   description varchar(2000) DEFAULT 'Data Unavailable',
 					   
 CONSTRAINT pk_dimension PRIMARY KEY (dimension_id)					   
@@ -59,14 +60,18 @@ CONSTRAINT pk_location PRIMARY KEY (location_id, dimension_id),
 CONSTRAINT fk_world_id FOREIGN KEY (dimension_id) REFERENCES dimension(dimension_id)					   
 );
 
-CREATE TABLE local_creature (creature_id int NOT NULL DEFAULT nextval ('seq_creature_id'),
+CREATE SEQUENCE seq_local_creature_id
+INCREMENT BY 1
+START WITH 1
+NO MAXVALUE;
+CREATE TABLE local_creature (local_id int NOT NULL DEFAULT nextval ('seq_local_creature_id'),
 							 name varchar(100) NOT NULL UNIQUE,
 							 home_dimension_id int NOT NULL DEFAULT 1,
 							 home_locale_id int DEFAULT 1,
 							 description varchar(2000) DEFAULT 'Unknown',
 							 
-CONSTRAINT pk_local_creature_id PRIMARY KEY (creature_id),
-CONSTRAINT fk_local_creature_id FOREIGN KEY (creature_id)       REFERENCES creature(creature_id),
+CONSTRAINT pk_local_creature_id PRIMARY KEY (local_id),
+-- CONSTRAINT fk_local_creature_id FOREIGN KEY (creature_id)       REFERENCES creature(creature_id),
 CONSTRAINT fk_home_dimension_id FOREIGN KEY (home_dimension_id) REFERENCES dimension(dimension_id),
 CONSTRAINT fk_home_city_id      FOREIGN KEY (home_locale_id)    REFERENCES location(location_id)
 );

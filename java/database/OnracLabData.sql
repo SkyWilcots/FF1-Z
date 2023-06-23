@@ -13,13 +13,14 @@ START WITH 1
 NO MAXVALUE;
 
 CREATE TABLE creature (creature_id int NOT NULL DEFAULT nextval('seq_creature_id'),
+					   name varchar(100) NOT NULL UNIQUE,
 					   LV int NOT NULL DEFAULT 1, 
-					   STRValue int NOT NULL DEFAULT 10, 
-					   DEXValue int NOT NULL DEFAULT 10, 
-					   CONValue int NOT NULL DEFAULT 10, 
-					   INTValue int NOT NULL DEFAULT 10, 
-					   WISValue int NOT NULL DEFAULT 10,
-					   CHAValue int NOT NULL DEFAULT 10,
+					   STR_Value int NOT NULL DEFAULT 10, 
+					   DEX_Value int NOT NULL DEFAULT 10, 
+					   CON_Value int NOT NULL DEFAULT 10, 
+					   INT_Value int NOT NULL DEFAULT 10, 
+					   WIS_Value int NOT NULL DEFAULT 10,
+					   CHA_Value int NOT NULL DEFAULT 10,
 																
 						CONSTRAINT pk_creature PRIMARY KEY (creature_id)
 );
@@ -31,7 +32,7 @@ NO MAXVALUE;
 					   
 CREATE TABLE dimension (dimension_id int NOT NULL DEFAULT nextval ('seq_dimension_id'),
 					   dimension_name varchar(100) NOT NULL UNIQUE,
-					   dimension_code varchar(3) NOT NULL UNIQUE,
+					   dimension_code varchar(5) NOT NULL UNIQUE,
 					   description varchar(2000) DEFAULT 'Data Unavailable',
 					   
 CONSTRAINT pk_dimension PRIMARY KEY (dimension_id)					   
@@ -58,6 +59,7 @@ CREATE TABLE location (location_id int NOT NULL UNIQUE DEFAULT nextval ('seq_loc
 CONSTRAINT pk_location PRIMARY KEY (location_id, dimension_id),
 CONSTRAINT fk_world_id FOREIGN KEY (dimension_id) REFERENCES dimension(dimension_id)					   
 );
+
 
 CREATE TABLE local_creature (creature_id int NOT NULL DEFAULT nextval ('seq_creature_id'),
 							 name varchar(100) NOT NULL UNIQUE,
