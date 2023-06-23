@@ -100,4 +100,138 @@ VALUES (
 	'Gaia',
 	'9-A');
 	
-	SELECT * FROM dimension;
+INSERT INTO dimension (
+	dimension_name,
+	dimension_code)
+VALUES (
+	'Dreaming Planet',
+	'10-S'
+);
+	
+	INSERT INTO dimension (
+	dimension_name,
+	dimension_code)
+VALUES (
+	'Dreaming City',
+	'10-Z'
+);
+	
+INSERT INTO dimension (
+	dimension_name,
+	dimension_code)
+VALUES (
+	'Vana''diel',
+	'11-'''
+);
+	
+	INSERT INTO dimension (
+	dimension_name,
+	dimension_code)
+VALUES (
+	'World of Scions and Gods',
+	'12-A'
+);	
+	
+	
+INSERT INTO location(
+	dimension_id,
+	location_name,
+	description
+)
+VALUES(
+(SELECT dimension_id FROM dimension WHERE dimension_name = 'World of Cosmos'),
+'The Kingdom of Cornelia',
+'Cornelia -- a prospering kingdom at the heart of the world. At the seat of the throne sits a kind king who has seen the lands prosper since the end of the Earth-Sky Wars. His daughter, Princess Sarah, seems to be quite popular among the people, as she regularly plays the lute at the city square for all to hear.'
+
+);
+
+INSERT INTO location(
+	dimension_id,
+	location_name,
+	description
+)
+VALUES(
+	(SELECT dimension_id FROM dimension WHERE dimension_code = '2-A'),
+	'Mysidia',
+	'Altan''s hometown. A thriving magic city full of knowledge seated in a tropical continent. Altan claims it is the birthplace of a famous wizard from the era he references often, known as Minwu during the Wild Rose Rebellion. Judging by Altan''s own affinity for magic, one would assume many individuals who live in Mysidia practice the art of magic.'
+)
+
+INSERT INTO dimension (
+	dimension_name,
+	dimension_code,
+	description)
+VALUES (
+	'The Emperor''s Garden',
+	'2-P',
+	'A different version of Altan''s home world. A world where Emperor Palamecia''s might has spread through out the land, as many cities and kingdoms have been occupied by Palamecia forces. The princess Hilda and her adviser are nowhere to be found.'
+);
+
+--Forgot using a single query to put multiple values in is a thing.
+INSERT INTO location(
+	dimension_id,
+	location_name,
+	description
+)
+VALUES(
+(SELECT dimension_id FROM dimension WHERE dimension_name = 'World of Cosmos'),
+'Pravoka',
+'A bustling port town known for many things by many people. For gourmands, it''s known for its decadent seafood markets. For athletes, its blitzball scene. And for wandering drifters, it is known for being a hotspot for many raids by pirates and sahaguins where villainy and skullduggery abound. Indeed, those who cannot protect themselves are often robbed of gold and life alike, and the one villain who stands above the rest in this city is the great pirate, Captain Bikke.'
+),
+((SELECT dimension_id FROM dimension WHERE dimension_name = 'World of Cosmos'),
+'Watercrest University',
+ 'Built near Crescent Lake City, the prestigious Watercrest University is an academia home to many wizards, magi and apsiring scholars alike, turning the place into what amounts to a veritable university town. The entrance exams to the university are notoriously difficult, and usually it is only the elite are granted admittance. Lukahn, the headmaster of the university, is a very influential figure involved in the management of the city.'
+),
+((SELECT dimension_id FROM dimension WHERE dimension_name = 'World of Cosmos'),
+ 'Onrac',
+'Onrac is a city-state where much entertainment prevails. Once long ago, the Onrac was known for its advanced military, incredible technological breakthroughs and scientific research, but many protests and a change in political hands saw this city bury its past behind a golden veil of the arts. Many auditoriums and museums, and even a large blitzball stadium dot the city. Very few are lucky to meet Nerissa in person, as she is a popular socialite, fashion model, and even a world-famous blitzball player for the Onrac Abes.'
+);
+
+INSERT INTO location(
+	dimension_id,
+	location_name,
+	description
+)
+VALUES(
+(SELECT dimension_id FROM dimension WHERE dimension_name = 'World of Cosmos'),
+'Melmond',
+'A quiet town full of modest simple farmers. Once a hotspot for those looking for quality farmer''s market foodstuffs, this town has been experiencing quite a terrible plague lately. Livestock and citizens have been catching terrible disease, and crops have had the worst yield in centuries this year. The people and the land are dying. Father John, Jerid and Elize are the local priests who are working very hard to heal the sick and pray for the crystals'' light to shine again on this town.'
+
+);
+
+INSERT INTO local_creature(
+	name,
+	home_locale_id,
+	description
+)
+VALUES
+
+(
+'Luthien Dervin',
+(SELECT location_id FROM location WHERE location_name = 'Watercrest University'),	
+'A standoffish scholar and blue mage. Her sometimes poor temperament can be attributed to her peers--and her estranged mother--mistreating her from a young age for her relation to the infamous Elfheim terrorist, Astos. Since becoming a Warrior of Light, she seems to have three objectives in mind: Find her missing older sister Mayora; Prove to the world that she is better than her familial association with Astos; And finally, kill Astos.'
+),
+
+(
+'Iomene Dervin',
+(SELECT location_id FROM location WHERE location_name = 'Onrac'),
+'A jolly elf woman with many occupations under her belt, incluing being Luthien''s grandmother, a red mage, a former militiawoman, and a former movie actress. Despite looking to be in her late 20s, she claims to be more than 108 years old. Her youth apparently is the result of some form of science, but even Luthien doesn''the know the details to that.'
+),
+
+(
+'Guiscard Durendal',
+(SELECT location_id FROM location WHERE location_name = 'Pravoka'),
+'An elf from the streets of Pravoka. Having served for a short time as a deckmate  for the Syldra Pirates, he decided to branch out into starting a business of his own selling weapons. His reasons for taking up the mantle as Warrior of Light is to gain further fame and sales in his weapons business.'
+);
+
+-- INSERT INTO stranger_creature(
+-- 			name
+			
+
+-- )
+
+--Query to call on all of the currently existing locales 
+	SELECT l.location_name, d.dimension_code, l.description AS City_Description FROM location l
+	JOIN dimension d ON l.dimension_id = d.dimension_id;
+	
+	SELECT * FROM creature;
+	SELECT * from dimension;
